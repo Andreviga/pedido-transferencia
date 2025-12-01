@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Pedido de Transferência / Cancelamento</title>
+
+    <!-- Biblioteca para gerar PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+    <!-- Web Component -->
+    <script src="pedido.js" defer></script>
+
+    <style>
+        body {
+            background: #e8f5e9;
+            padding: 24px;
+            font-family: Arial;
+        }
+        pedido-transferencia {
+            display: block;
+            max-width: 780px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <pedido-transferencia></pedido-transferencia>
+</body>
+</html>
