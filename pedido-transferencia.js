@@ -30,15 +30,6 @@ class PedidoTransferencia extends HTMLElement {
                 font-size: 20px;
                 color: #004d40;
             }
-            .row {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 16px;
-            }
-            .col {
-                flex: 1;
-                min-width: 220px;
-            }
             label {
                 font-weight: bold;
                 margin-top: 10px;
@@ -73,14 +64,13 @@ class PedidoTransferencia extends HTMLElement {
                 border: none;
                 cursor: pointer;
                 font-weight: 600;
-                font-size: 14px;
-            }
-            .btn-secondary {
-                background: #eceff1;
             }
             .btn-primary {
                 background: #004d40;
                 color: white;
+            }
+            .btn-secondary {
+                background: #eceff1;
             }
 
             .msg {
@@ -131,7 +121,6 @@ class PedidoTransferencia extends HTMLElement {
 
             <div class="token-area">
                 <button id="btn-token" class="btn-secondary">Enviar token por e-mail</button>
-
                 <label style="margin-top:10px;">Código recebido:</label>
                 <input id="token" maxlength="10">
             </div>
@@ -145,11 +134,16 @@ class PedidoTransferencia extends HTMLElement {
     }
 
     init(shadow) {
-        const API_URL = "https://script.google.com/macros/s/AKfycbynwSc4ElgU83SoIla5AelVW0Itcw_2xZF5L_yQAPjXcdTgNTbl-5sApGRWh6bpnLZUKQ/exec";
+        const API_URL =
+        "https://script.google.com/macros/s/AKfycbynwSc4ElgU83SoIla5AelVW0Itcw_2xZF5L_yQAPjXcdTgNTbl-5sApGRWh6bpnLZUKQ/exec";
 
-        const agora = new Date();
+        const getMsgText = (m) => {
+            if (!m) return "";
+            return typeof m === "string" ? m : JSON.stringify(m);
+        };
+
         shadow.getElementById("linha-data").textContent =
-            "São Paulo - SP, " + agora.toLocaleDateString("pt-BR");
+            "São Paulo - SP, " + new Date().toLocaleDateString("pt-BR");
 
         const get = id => shadow.getElementById(id).value.trim();
 
@@ -159,6 +153,7 @@ class PedidoTransferencia extends HTMLElement {
             msg.className = "msg " + tipo;
         };
 
+        // Enviar token
         shadow.getElementById("btn-token").addEventListener("click", async () => {
             const email = get("email");
             const aluno = get("aluno");
@@ -169,15 +164,10 @@ class PedidoTransferencia extends HTMLElement {
                 return;
             }
 
-            try {
-                setMsg("Enviando token...", "info");
+            setMsg("Enviando token...", "info");
 
-                const payload = {
-                    action: "solicitarToken",
-                    email,
-                    aluno,
-                    responsavel
-                };
+            try {
+                const payload = { action: "solicitarToken", email, aluno, responsavel };
 
                 const resp = await fetch(API_URL, {
                     method: "POST",
@@ -190,13 +180,15 @@ class PedidoTransferencia extends HTMLElement {
                 if (json.sucesso) {
                     setMsg("Token enviado ao e-mail informado.", "sucesso");
                 } else {
-                    setMsg(json.mensagem || "Erro ao enviar token.", "erro");
+                    setMsg(getMsgText(json.mensagem) || "Erro ao enviar token.", "erro");
                 }
+
             } catch (e) {
                 setMsg("Erro ao enviar token.", "erro");
             }
         });
 
+        // Enviar PDF
         shadow.getElementById("btn-enviar").addEventListener("click", async () => {
             const campos = ["responsavel", "cpf", "aluno", "serie", "tipo", "motivo", "telefone", "email", "token"];
             for (let c of campos) {
@@ -223,23 +215,21 @@ class PedidoTransferencia extends HTMLElement {
                 dataISO: new Date().toISOString().slice(0, 10)
             };
 
-            const html = `
-<div style="font-family:Arial;padding:20px;">
-<h2>Pedido de Transferência / Cancelamento</h2>
-<p><b>Responsável:</b> ${dados.responsavel}</p>
-<p><b>CPF:</b> ${dados.cpf}</p>
-<p><b>Aluno:</b> ${dados.aluno}</p>
-<p><b>Série:</b> ${dados.serie}</p>
-<p><b>Tipo:</b> ${dados.tipo}</p>
-<p><b>Motivo:</b><br>${dados.motivo}</p>
-<p><b>Telefone:</b> ${dados.telefone}</p>
-<p><b>E-mail:</b> ${dados.email}</p>
-<p><b>Token:</b> ${dados.token}</p>
-<p>${dados.cidade}, ${dados.dataLonga}</p>
-</div>`;
-
             const wrapper = document.createElement("div");
-            wrapper.innerHTML = html;
+            wrapper.innerHTML = `
+            <div style="font-family:Arial;padding:20px;">
+                <h2>Pedido de Transferência / Cancelamento</h2>
+                <p><b>Responsável:</b> ${dados.responsavel}</p>
+                <p><b>CPF:</b> ${dados.cpf}</p>
+                <p><b>Aluno:</b> ${dados.aluno}</p>
+                <p><b>Série:</b> ${dados.serie}</p>
+                <p><b>Tipo:</b> ${dados.tipo}</p>
+                <p><b>Motivo:</b><br>${dados.motivo}</p>
+                <p><b>Telefone:</b> ${dados.telefone}</p>
+                <p><b>E-mail:</b> ${dados.email}</p>
+                <p><b>Token:</b> ${dados.token}</p>
+                <p>${dados.cidade}, ${dados.dataLonga}</p>
+            </div>`;
 
             const pdfUri = await html2pdf()
                 .set({
@@ -265,8 +255,9 @@ class PedidoTransferencia extends HTMLElement {
                 if (json.sucesso) {
                     setMsg("Pedido enviado com sucesso!", "sucesso");
                 } else {
-                    setMsg(json.mensagem || "Erro ao salvar.", "erro");
+                    setMsg(getMsgText(json.mensagem) || "Erro ao salvar.", "erro");
                 }
+
             } catch (e) {
                 setMsg("Erro ao concluir envio.", "erro");
             }
