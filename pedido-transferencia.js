@@ -10,7 +10,7 @@ class PedidoTransferencia extends HTMLElement {
                 background: #ffffff;
                 border-radius: 14px;
                 box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-                padding: 24px 24px 28px;
+                padding: 24px;
                 border-top: 4px solid #004d40;
                 font-family: Arial, sans-serif;
             }
@@ -41,7 +41,6 @@ class PedidoTransferencia extends HTMLElement {
                 border-radius: 8px;
                 border: 1px solid #b0bec5;
                 font-size: 14px;
-                transition: 0.2s;
             }
             input:focus, textarea:focus, select:focus {
                 outline: none;
@@ -53,7 +52,7 @@ class PedidoTransferencia extends HTMLElement {
             .token-area {
                 background: #f1f8e9;
                 border-radius: 10px;
-                padding: 12px 14px;
+                padding: 12px;
                 margin-top: 10px;
                 border: 1px dashed #9e9d24;
             }
@@ -64,6 +63,7 @@ class PedidoTransferencia extends HTMLElement {
                 border: none;
                 cursor: pointer;
                 font-weight: 600;
+                font-size: 14px;
             }
             .btn-primary {
                 background: #004d40;
@@ -76,10 +76,11 @@ class PedidoTransferencia extends HTMLElement {
             .msg {
                 margin-top: 12px;
                 font-size: 13px;
+                min-height: 18px;
             }
-            .msg.erro { color: #b71c1c; }
-            .msg.sucesso { color: #2e7d32; }
-            .msg.info { color: #1565c0; }
+            .erro { color: #b71c1c; }
+            .sucesso { color: #2e7d32; }
+            .info { color: #1565c0; }
         </style>
 
         <div class="card">
@@ -137,9 +138,11 @@ class PedidoTransferencia extends HTMLElement {
         const API_URL =
         "https://script.google.com/macros/s/AKfycbynwSc4ElgU83SoIla5AelVW0Itcw_2xZF5L_yQAPjXcdTgNTbl-5sApGRWh6bpnLZUKQ/exec";
 
-        const getMsgText = (m) => {
+        const limpaObj = m => {
             if (!m) return "";
-            return typeof m === "string" ? m : JSON.stringify(m);
+            if (typeof m === "string") return m;
+            if (typeof m === "object" && Object.keys(m).length === 0) return "";
+            return JSON.stringify(m);
         };
 
         shadow.getElementById("linha-data").textContent =
@@ -148,12 +151,14 @@ class PedidoTransferencia extends HTMLElement {
         const get = id => shadow.getElementById(id).value.trim();
 
         const msg = shadow.getElementById("msg");
-        const setMsg = (t, tipo = "info") => {
-            msg.textContent = t;
-            msg.className = "msg " + tipo;
+        const setMsg = (texto, tipo = "info") => {
+            msg.textContent = texto;
+            msg.className = tipo;
         };
 
-        // Enviar token
+        // --------------------------------------------------------
+        // ENVIAR TOKEN
+        // --------------------------------------------------------
         shadow.getElementById("btn-token").addEventListener("click", async () => {
             const email = get("email");
             const aluno = get("aluno");
@@ -167,12 +172,13 @@ class PedidoTransferencia extends HTMLElement {
             setMsg("Enviando token...", "info");
 
             try {
-                const payload = { action: "solicitarToken", email, aluno, responsavel };
-
                 const resp = await fetch(API_URL, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify({
+                        action: "solicitarToken",
+                        email, aluno, responsavel
+                    })
                 });
 
                 const json = await resp.json();
@@ -180,15 +186,17 @@ class PedidoTransferencia extends HTMLElement {
                 if (json.sucesso) {
                     setMsg("Token enviado ao e-mail informado.", "sucesso");
                 } else {
-                    setMsg(getMsgText(json.mensagem) || "Erro ao enviar token.", "erro");
+                    setMsg(limpaObj(json.mensagem) || "Erro ao enviar token.", "erro");
                 }
 
-            } catch (e) {
+            } catch {
                 setMsg("Erro ao enviar token.", "erro");
             }
         });
 
-        // Enviar PDF
+        // --------------------------------------------------------
+        // ENVIAR FORMULÁRIO
+        // --------------------------------------------------------
         shadow.getElementById("btn-enviar").addEventListener("click", async () => {
             const campos = ["responsavel", "cpf", "aluno", "serie", "tipo", "motivo", "telefone", "email", "token"];
             for (let c of campos) {
@@ -215,9 +223,10 @@ class PedidoTransferencia extends HTMLElement {
                 dataISO: new Date().toISOString().slice(0, 10)
             };
 
-            const wrapper = document.createElement("div");
-            wrapper.innerHTML = `
-            <div style="font-family:Arial;padding:20px;">
+            // GERA PDF
+            const container = document.createElement("div");
+            container.innerHTML = `
+            <div style="font-family:Arial;padding:24px;">
                 <h2>Pedido de Transferência / Cancelamento</h2>
                 <p><b>Responsável:</b> ${dados.responsavel}</p>
                 <p><b>CPF:</b> ${dados.cpf}</p>
@@ -231,23 +240,27 @@ class PedidoTransferencia extends HTMLElement {
                 <p>${dados.cidade}, ${dados.dataLonga}</p>
             </div>`;
 
-            const pdfUri = await html2pdf()
+            const uri = await html2pdf()
                 .set({
                     margin: 10,
                     filename: `pedido_${dados.aluno}_${dados.dataISO}.pdf`,
                     html2canvas: { scale: 2 },
                     jsPDF: { unit: "mm", format: "a4" }
                 })
-                .from(wrapper)
+                .from(container)
                 .outputPdf("datauristring");
 
-            dados.pdfBase64 = pdfUri.split(",")[1];
+            dados.pdfBase64 = uri.split(",")[1];
 
+            // ENVIA AO APPS SCRIPT
             try {
                 const resp = await fetch(API_URL, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify({ action: "salvarPedido", ...dados })
+                    body: JSON.stringify({
+                        action: "salvarPedido",
+                        ...dados
+                    })
                 });
 
                 const json = await resp.json();
@@ -255,10 +268,10 @@ class PedidoTransferencia extends HTMLElement {
                 if (json.sucesso) {
                     setMsg("Pedido enviado com sucesso!", "sucesso");
                 } else {
-                    setMsg(getMsgText(json.mensagem) || "Erro ao salvar.", "erro");
+                    setMsg(limpaObj(json.mensagem) || "Erro ao salvar.", "erro");
                 }
 
-            } catch (e) {
+            } catch {
                 setMsg("Erro ao concluir envio.", "erro");
             }
         });
