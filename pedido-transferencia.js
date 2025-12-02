@@ -291,8 +291,8 @@ class PedidoTransferencia extends HTMLElement {
     }
 
     init(shadow) {
-        const API_URL =
-            "https://script.google.com/macros/s/AKfycbw-cTsdcnNnudrKmZvDX0P3jVCDhgV0pUTioOwoX8e7r-r6Uyst3V7LEHogpeYCNADHeQ/exec";
+        // ⚠️ COLE AQUI A URL DA SUA IMPLANTAÇÃO DO APPS SCRIPT (sem o "c" extra no final)
+        const API_URL = "https://script.google.com/macros/s/AKfycbw-cTsdcnNnudrKmZvDX0P3jVCDhgV0pUTioOwoX8e7r-r6Uyst3V7LEHogpeYCNADHeQ/exec";
 
         shadow.getElementById("linha-data").textContent =
             "São Paulo - SP, " + new Date().toLocaleDateString("pt-BR");
@@ -331,9 +331,9 @@ class PedidoTransferencia extends HTMLElement {
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         action: "solicitarToken",
-                        email,
-                        aluno,
-                        responsavel
+                        email: email,
+                        aluno: aluno,
+                        responsavel: responsavel
                     })
                 });
 
