@@ -36,6 +36,16 @@ class PedidoTransferencia extends HTMLElement {
                 color: #555;
             }
 
+            .alerta {
+                background: #fff8e1;
+                border: 1px solid #ffe082;
+                border-radius: 8px;
+                padding: 10px 12px;
+                font-size: 12px;
+                color: #6d4c41;
+                margin-bottom: 10px;
+            }
+
             .row {
                 display: flex;
                 flex-wrap: wrap;
@@ -44,6 +54,15 @@ class PedidoTransferencia extends HTMLElement {
             .col {
                 flex: 1;
                 min-width: 220px;
+            }
+
+            .section-title {
+                margin-top: 16px;
+                font-weight: bold;
+                font-size: 14px;
+                color: #004d40;
+                border-left: 4px solid #004d40;
+                padding-left: 8px;
             }
 
             label {
@@ -73,13 +92,14 @@ class PedidoTransferencia extends HTMLElement {
                 margin-top: 4px;
             }
 
-            .section-title {
-                margin-top: 16px;
-                font-weight: bold;
-                font-size: 14px;
-                color: #004d40;
-                border-left: 4px solid #004d40;
-                padding-left: 8px;
+            .rescisao-box {
+                background: #f3f7ff;
+                border-radius: 8px;
+                padding: 10px 12px;
+                font-size: 12px;
+                color: #37474f;
+                border: 1px solid #bbdefb;
+                margin-top: 8px;
             }
 
             .token-area {
@@ -89,7 +109,6 @@ class PedidoTransferencia extends HTMLElement {
                 margin-top: 10px;
                 border: 1px dashed #9e9d24;
             }
-
             .token-area p {
                 margin: 0 0 8px;
                 font-size: 12px;
@@ -156,6 +175,13 @@ class PedidoTransferencia extends HTMLElement {
                 </div>
             </div>
 
+            <div class="alerta">
+                <b>IMPORTANTE:</b> Os dados preenchidos neste formulário serão utilizados para gerar a
+                <b>declaração oficial de transferência/rescisão</b>.  
+                Informações incorretas ou incompletas podem atrasar a emissão da documentação e a matrícula
+                do aluno na nova instituição. Revise com atenção nomes, séries, CPF, telefone e e-mail antes de enviar.
+            </div>
+
             <div class="section-title">Dados do responsável</div>
             <div class="row">
                 <div class="col">
@@ -203,6 +229,20 @@ class PedidoTransferencia extends HTMLElement {
                 </div>
             </div>
 
+            <div class="rescisao-box">
+                <b>Informação sobre rescisão contratual:</b><br>
+                A solicitação de transferência ou cancelamento no decorrer do ano letivo caracteriza
+                <b>rescisão contratual</b>, conforme Cláusula 17 do contrato educacional.  
+                De forma resumida:
+                <ul style="margin:6px 0 0 18px;padding:0;">
+                    <li>A rescisão deve ser formalizada por escrito, por meio deste requerimento.</li>
+                    <li>O responsável permanece obrigado ao pagamento da próxima mensalidade vincenda.</li>
+                    <li>Sem o pedido formal, o contrato permanece ativo, com cobrança normal das parcelas.</li>
+                    <li>Rescisões motivadas por divergências pedagógicas ou de serviço passam por processo interno,
+                        com registros, reuniões e protocolos, podendo haver multa de 10% sobre o valor restante do ano letivo.</li>
+                </ul>
+            </div>
+
             <label>Série / Turma para prosseguir os estudos</label>
             <input id="serieDestino" placeholder="Ex: 6º ano A">
 
@@ -217,6 +257,9 @@ class PedidoTransferencia extends HTMLElement {
                 <div class="col">
                     <label>E-mail do responsável</label>
                     <input id="email" type="email" placeholder="email@exemplo.com">
+                    <div class="small-note">
+                        O e-mail será utilizado para envio do token de assinatura digital e da documentação, após aprovação.
+                    </div>
                 </div>
             </div>
 
@@ -249,9 +292,8 @@ class PedidoTransferencia extends HTMLElement {
 
     init(shadow) {
         const API_URL =
-            "https://script.google.com/macros/s/AKfycbws4iTQbSSL752yMX8S56AKWXrZS-7GmppyHxniwbr2d_9gmfnuoBpDy1Nir2aJRNWWtA/exec";
+            "https://script.google.com/macros/s/AKfycbynwSc4ElgU83SoIla5AelVW0Itcw_2xZF5L_yQAPjXcdTgNTbl-5sApGRWh6bpnLZUKQ/exec";
 
-        // data SP
         shadow.getElementById("linha-data").textContent =
             "São Paulo - SP, " + new Date().toLocaleDateString("pt-BR");
 
@@ -341,28 +383,71 @@ class PedidoTransferencia extends HTMLElement {
 
             setMsg("Gerando documentos em PDF...", "info");
 
-            // ---- PDF 1: Pedido de Transferência / Cancelamento ----
+            // ---- PDF 1: Pedido (com cabeçalho, rodapé e marca d'água) ----
             const pedidoWrapper = document.createElement("div");
             pedidoWrapper.innerHTML = `
-            <div style="font-family:Arial;padding:24px;">
-                <h2 style="text-align:center;margin-bottom:10px;">
-                    Pedido de Transferência / Cancelamento de Matrícula
-                </h2>
-                <p><b>Responsável:</b> ${dados.responsavel}</p>
-                <p><b>CPF:</b> ${dados.cpf}</p>
-                <p><b>Aluno(a):</b> ${dados.aluno}</p>
-                <p><b>Série / Turma (atual):</b> ${dados.serie}</p>
-                <p><b>Tipo de solicitação:</b> ${dados.tipo}</p>
-                <p><b>Momento da solicitação:</b> ${dados.momento}</p>
-                <p><b>Série / Turma para prosseguir os estudos:</b> ${dados.serieDestino}</p>
-                <p><b>Motivo:</b><br>${dados.motivo}</p>
-                <p><b>Telefone:</b> ${dados.telefone}</p>
-                <p><b>E-mail:</b> ${dados.email}</p>
-                <p style="margin-top:18px;">
-                    <b>Assinatura digital:</b> confirmada via token enviado ao e-mail do responsável.
+            <div style="font-family:Arial; padding:36px 40px; position:relative; min-height:1000px;">
+              <!-- Marca d'água -->
+              <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); opacity:0.06; z-index:0;">
+                <img src="https://static.wixstatic.com/media/b0ca3c_4aceed1b7d8f4507b9a9d03d9cb55b06~mv2.png" style="width:420px;">
+              </div>
+
+              <div style="position:relative; z-index:1;">
+                <!-- Cabeçalho -->
+                <div style="display:flex;align-items:center;border-bottom:1px solid #ccc;padding-bottom:8px;margin-bottom:16px;">
+                  <img src="https://static.wixstatic.com/media/b0ca3c_4aceed1b7d8f4507b9a9d03d9cb55b06~mv2.png" style="width:80px;margin-right:12px;">
+                  <div>
+                    <div style="font-size:18px;font-weight:bold;color:#004d40;">Colégio Raízes</div>
+                    <div style="font-size:11px;color:#555;">
+                      R. Diogo de Souza, 257 – Cidade Líder – São Paulo - SP – CEP 08285-330<br>
+                      www.raizesedu.com.br – Tel/Fax: (11) 2741-9849
+                    </div>
+                  </div>
+                </div>
+
+                <h2 style="text-align:center;margin-top:0;margin-bottom:16px;">Pedido de Transferência / Cancelamento de Matrícula</h2>
+
+                <p style="font-size:12px;color:#555;margin-bottom:18px;">
+                  ${dados.cidade}, ${dados.dataLonga}
                 </p>
-                <p><b>Código de validação:</b> ${dados.token}</p>
-                <p style="margin-top:20px;">${dados.cidade}, ${dados.dataLonga}</p>
+
+                <h3 style="font-size:14px;color:#004d40;margin-bottom:6px;">Dados do responsável</h3>
+                <p style="font-size:13px;">
+                  <b>Responsável:</b> ${dados.responsavel}<br>
+                  <b>CPF:</b> ${dados.cpf}<br>
+                  <b>Telefone:</b> ${dados.telefone}<br>
+                  <b>E-mail:</b> ${dados.email}
+                </p>
+
+                <h3 style="font-size:14px;color:#004d40;margin-bottom:6px;">Dados do aluno</h3>
+                <p style="font-size:13px;">
+                  <b>Aluno(a):</b> ${dados.aluno}<br>
+                  <b>Série / Turma (atual):</b> ${dados.serie}<br>
+                  <b>Série / Turma para prosseguir os estudos:</b> ${dados.serieDestino}
+                </p>
+
+                <h3 style="font-size:14px;color:#004d40;margin-bottom:6px;">Solicitação</h3>
+                <p style="font-size:13px;">
+                  <b>Tipo de solicitação:</b> ${dados.tipo}<br>
+                  <b>Momento da solicitação:</b> ${dados.momento}
+                </p>
+
+                <h3 style="font-size:14px;color:#004d40;margin-bottom:6px;">Motivo</h3>
+                <p style="font-size:13px;white-space:pre-wrap;">
+                  ${dados.motivo}
+                </p>
+
+                <h3 style="font-size:14px;color:#004d40;margin-bottom:6px;">Assinatura digital</h3>
+                <p style="font-size:13px;">
+                  O responsável confirmou este pedido por meio de token enviado ao e-mail informado.<br>
+                  <b>Código de validação:</b> ${dados.token}
+                </p>
+
+                <!-- Rodapé -->
+                <div style="border-top:1px solid #ccc;margin-top:40px;padding-top:6px;font-size:11px;color:#555;text-align:center;">
+                  Documento gerado eletronicamente pelo sistema do Colégio Raízes. Não requer assinatura manual.
+                </div>
+              </div>
             </div>`;
 
             const pedidoPdfUri = await html2pdf()
@@ -377,12 +462,31 @@ class PedidoTransferencia extends HTMLElement {
 
             const pdfBase64 = pedidoPdfUri.split(",")[1];
 
-            // ---- PDF 2: Declaração de Transferência (modelo) ----
+            // ---- PDF 2: Declaração de Transferência (modelo Raízes) ----
             const declaracaoWrapper = document.createElement("div");
             declaracaoWrapper.innerHTML = `
-            <div style="font-family:Arial;padding:40px 40px 24px;line-height:1.6;">
-                <h2 style="text-align:center;margin-top:0;margin-bottom:24px;">Declaração de Transferência</h2>
-                <p>
+            <div style="font-family:Arial; padding:40px 52px; position:relative; min-height:1000px;">
+              <!-- Marca d'água -->
+              <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); opacity:0.06; z-index:0;">
+                <img src="https://static.wixstatic.com/media/b0ca3c_4aceed1b7d8f4507b9a9d03d9cb55b06~mv2.png" style="width:420px;">
+              </div>
+
+              <div style="position:relative; z-index:1;">
+                <!-- Cabeçalho -->
+                <div style="display:flex;align-items:center;border-bottom:1px solid #ccc;padding-bottom:8px;margin-bottom:24px;">
+                  <img src="https://static.wixstatic.com/media/b0ca3c_4aceed1b7d8f4507b9a9d03d9cb55b06~mv2.png" style="width:80px;margin-right:12px;">
+                  <div>
+                    <div style="font-size:18px;font-weight:bold;color:#004d40;">Colégio Raízes</div>
+                    <div style="font-size:11px;color:#555;">
+                      R. Diogo de Souza, 257 – Cidade Líder – São Paulo - SP – CEP 08285-330<br>
+                      www.raizesedu.com.br – Tel/Fax: (11) 2741-9849
+                    </div>
+                  </div>
+                </div>
+
+                <h2 style="text-align:center;margin-top:0;margin-bottom:32px;">Declaração de Transferência</h2>
+
+                <p style="font-size:13px;line-height:1.6;">
                   Atesto para os devidos fins, que o aluno(a)
                   <b>${dados.aluno}</b>,
                   está cursando o(a)
@@ -391,23 +495,23 @@ class PedidoTransferencia extends HTMLElement {
                   <b>${dados.serieDestino}</b>.
                 </p>
 
-                <p>
+                <p style="font-size:13px;line-height:1.6;">
                   A documentação de Histórico escolar tem o prazo de 90 (noventa) dias, ao contar da data da transferência.
-                  (caso haja documentação pendente, conta a partir da entrega da documentação)
+                  (caso haja documentação pendente, conta a partir da entrega da documentação).
                 </p>
 
-                <p style="margin-top:32px;">
+                <p style="font-size:13px;margin-top:32px;">
                   Sem mais,
                 </p>
 
-                <p style="margin-top:40px;">
+                <p style="font-size:13px;margin-top:40px;">
                   ${dados.cidade}, ${dados.dataLonga}
                 </p>
 
-                <p style="margin-top:60px;font-size:13px;color:#555;text-align:center;">
-                  R. Diogo de Souza, 257 – Cidade Líder – São Paulo - SP – CEP 08285-330<br>
-                  www.raizesedu.com.br – Tel/Fax: 2741-9849
-                </p>
+                <div style="border-top:1px solid #ccc;margin-top:80px;padding-top:6px;font-size:11px;color:#555;text-align:center;">
+                  Documento gerado eletronicamente pelo sistema do Colégio Raízes. Não requer assinatura manual.
+                </div>
+              </div>
             </div>`;
 
             const declaracaoPdfUri = await html2pdf()
@@ -440,7 +544,7 @@ class PedidoTransferencia extends HTMLElement {
                 const json = await resp.json();
 
                 if (json.sucesso) {
-                    setMsg("Pedido e declaração enviados com sucesso. Obrigado!", "sucesso");
+                    setMsg("Pedido enviado com sucesso. Você receberá a documentação após a aprovação da escola.", "sucesso");
                 } else {
                     setMsg(limpaMensagem(json.mensagem) || "Erro ao salvar os documentos.", "erro");
                 }
