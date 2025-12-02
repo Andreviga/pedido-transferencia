@@ -291,7 +291,7 @@ class PedidoTransferencia extends HTMLElement {
     }
 
     init(shadow) {
-        // ⚠️ COLE AQUI A URL DA SUA IMPLANTAÇÃO DO APPS SCRIPT (sem o "c" extra no final)
+        // URL do seu Web App (terminando em /exec)
         const API_URL = "https://script.google.com/macros/s/AKfycbzZ54iI4ENuyKIwhMkm-a9M4DylU36nmhV62mJ3jYlLfg8WVyh9pISOyz2sztGLedbU/exec";
 
         shadow.getElementById("linha-data").textContent =
@@ -328,7 +328,7 @@ class PedidoTransferencia extends HTMLElement {
             try {
                 const resp = await fetch(API_URL, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },   // <-- ajustado
                     body: JSON.stringify({
                         action: "solicitarToken",
                         email: email,
@@ -383,7 +383,7 @@ class PedidoTransferencia extends HTMLElement {
 
             setMsg("Gerando documentos em PDF...", "info");
 
-            // ---- PDF 1: Pedido (com cabeçalho, rodapé e marca d'água) ----
+            // ---- PDF 1: Pedido ----
             const pedidoWrapper = document.createElement("div");
             pedidoWrapper.innerHTML = `
             <div style="font-family:Arial; padding:36px 40px; position:relative; min-height:1000px;">
@@ -462,7 +462,7 @@ class PedidoTransferencia extends HTMLElement {
 
             const pdfBase64 = pedidoPdfUri.split(",")[1];
 
-            // ---- PDF 2: Declaração de Transferência (modelo Raízes) ----
+            // ---- PDF 2: Declaração de Transferência ----
             const declaracaoWrapper = document.createElement("div");
             declaracaoWrapper.innerHTML = `
             <div style="font-family:Arial; padding:40px 52px; position:relative; min-height:1000px;">
@@ -532,7 +532,7 @@ class PedidoTransferencia extends HTMLElement {
             try {
                 const resp = await fetch(API_URL, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },   // <-- ajustado
                     body: JSON.stringify({
                         action: "salvarPedido",
                         ...dados,
