@@ -9,9 +9,9 @@ class PedidoTransferencia extends HTMLElement {
             .card {
                 background: #ffffff;
                 border-radius: 14px;
-                box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-                padding: 24px;
-                border-top: 4px solid #004d40;
+                box-shadow: 0 6px 20px rgba(0,0,0,0.16);
+                padding: 24px 24px 28px;
+                border-top: 4px solid #ffc107;
                 font-family: Arial, sans-serif;
             }
             .header {
@@ -23,17 +23,35 @@ class PedidoTransferencia extends HTMLElement {
                 margin-bottom: 16px;
             }
             .header img.logo {
-                width: 90px;
+                width: 80px;
             }
             .header-title h2 {
                 margin: 0;
                 font-size: 20px;
                 color: #004d40;
             }
+            .header-title p {
+                margin: 2px 0;
+                font-size: 12px;
+                color: #555;
+            }
+
+            .row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 16px;
+            }
+            .col {
+                flex: 1;
+                min-width: 220px;
+            }
+
             label {
                 font-weight: bold;
                 margin-top: 10px;
                 display: block;
+                font-size: 13px;
+                color: #333;
             }
             input, textarea, select {
                 width: 100%;
@@ -49,12 +67,33 @@ class PedidoTransferencia extends HTMLElement {
             }
             textarea { resize: vertical; }
 
+            .small-note {
+                font-size: 12px;
+                color: #777;
+                margin-top: 4px;
+            }
+
+            .section-title {
+                margin-top: 16px;
+                font-weight: bold;
+                font-size: 14px;
+                color: #004d40;
+                border-left: 4px solid #004d40;
+                padding-left: 8px;
+            }
+
             .token-area {
                 background: #f1f8e9;
                 border-radius: 10px;
-                padding: 12px;
+                padding: 12px 14px;
                 margin-top: 10px;
                 border: 1px dashed #9e9d24;
+            }
+
+            .token-area p {
+                margin: 0 0 8px;
+                font-size: 12px;
+                color: #555;
             }
 
             button {
@@ -69,8 +108,22 @@ class PedidoTransferencia extends HTMLElement {
                 background: #004d40;
                 color: white;
             }
+            .btn-primary:hover {
+                background: #00695c;
+            }
             .btn-secondary {
                 background: #eceff1;
+            }
+            .btn-secondary:hover {
+                background: #cfd8dc;
+            }
+
+            .buttons {
+                margin-top: 20px;
+                display: flex;
+                gap: 10px;
+                justify-content: flex-end;
+                flex-wrap: wrap;
             }
 
             .msg {
@@ -81,52 +134,112 @@ class PedidoTransferencia extends HTMLElement {
             .erro { color: #b71c1c; }
             .sucesso { color: #2e7d32; }
             .info { color: #1565c0; }
+
+            @media (max-width: 600px) {
+                .header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+                .header img.logo {
+                    width: 72px;
+                }
+            }
         </style>
 
         <div class="card">
             <div class="header">
-                <img class="logo" src="https://static.wixstatic.com/media/b0ca3c_4aceed1b7d8f4507b9a9d03d9cb55b06~mv2.png">
+                <img class="logo" src="https://static.wixstatic.com/media/b0ca3c_4aceed1b7d8f4507b9a9d03d9cb55b06~mv2.png" alt="Colégio Raízes">
                 <div class="header-title">
                     <h2>Pedido de Transferência / Cancelamento</h2>
+                    <p>Colégio Raízes – Educação Infantil, Ensino Fundamental e Médio</p>
                     <p id="linha-data"></p>
                 </div>
             </div>
 
-            <label>Nome do responsável:</label>
-            <input id="responsavel">
-
-            <label>CPF:</label>
-            <input id="cpf">
-
-            <label>Aluno(a):</label>
-            <input id="aluno">
-
-            <label>Série / Turma:</label>
-            <input id="serie">
-
-            <label>Tipo de solicitação:</label>
-            <select id="tipo">
-                <option value="">Selecione...</option>
-                <option>Transferência</option>
-                <option>Cancelamento</option>
-            </select>
-
-            <label>Motivo:</label>
-            <textarea id="motivo" rows="4"></textarea>
-
-            <label>Telefone:</label>
-            <input id="telefone">
-
-            <label>E-mail:</label>
-            <input id="email">
-
-            <div class="token-area">
-                <button id="btn-token" class="btn-secondary">Enviar token por e-mail</button>
-                <label style="margin-top:10px;">Código recebido:</label>
-                <input id="token" maxlength="10">
+            <div class="section-title">Dados do responsável</div>
+            <div class="row">
+                <div class="col">
+                    <label>Nome do responsável</label>
+                    <input id="responsavel">
+                </div>
+                <div class="col">
+                    <label>CPF do responsável</label>
+                    <input id="cpf" placeholder="000.000.000-00">
+                </div>
             </div>
 
-            <button id="btn-enviar" class="btn-primary" style="margin-top:20px;">✔ Validar e enviar pedido</button>
+            <div class="section-title">Dados do aluno</div>
+            <div class="row">
+                <div class="col">
+                    <label>Aluno(a)</label>
+                    <input id="aluno">
+                </div>
+                <div class="col">
+                    <label>Série / Turma (atual)</label>
+                    <input id="serie" placeholder="Ex: 5º ano A">
+                </div>
+            </div>
+
+            <div class="section-title">Informações da solicitação</div>
+            <div class="row">
+                <div class="col">
+                    <label>Tipo de solicitação</label>
+                    <select id="tipo">
+                        <option value="">Selecione...</option>
+                        <option>Transferência</option>
+                        <option>Cancelamento</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label>Momento da solicitação</label>
+                    <select id="momento">
+                        <option value="">Selecione...</option>
+                        <option>Meio do ano</option>
+                        <option>Fim do ano</option>
+                    </select>
+                    <div class="small-note">
+                        Meio do ano: prossegue na mesma série. Fim do ano: pode avançar para a próxima série.
+                    </div>
+                </div>
+            </div>
+
+            <label>Série / Turma para prosseguir os estudos</label>
+            <input id="serieDestino" placeholder="Ex: 6º ano A">
+
+            <label>Motivo da solicitação</label>
+            <textarea id="motivo" rows="4" placeholder="Descreva o motivo da transferência ou cancelamento..."></textarea>
+
+            <div class="row">
+                <div class="col">
+                    <label>Telefone</label>
+                    <input id="telefone" placeholder="(11) 99999-9999">
+                </div>
+                <div class="col">
+                    <label>E-mail do responsável</label>
+                    <input id="email" type="email" placeholder="email@exemplo.com">
+                </div>
+            </div>
+
+            <div class="section-title">Assinatura digital</div>
+            <p class="small-note">
+                A assinatura deste pedido é realizada por <b>token enviado ao e-mail do responsável</b>.
+                Siga os passos:
+                <br>1. Preencha os dados do responsável e do aluno.
+                <br>2. Clique em <b>Enviar token por e-mail</b>.
+                <br>3. Digite o código recebido no campo abaixo e envie o pedido.
+            </p>
+
+            <div class="token-area">
+                <p><b>Token de assinatura</b></p>
+                <button id="btn-token" type="button" class="btn-secondary">✉️ Enviar token por e-mail</button>
+                <label style="margin-top:10px;">Código recebido no e-mail</label>
+                <input id="token" maxlength="10" placeholder="Ex: 394821">
+            </div>
+
+            <div class="buttons">
+                <button id="btn-enviar" type="button" class="btn-primary">✔ Validar e enviar pedido</button>
+            </div>
+
             <div id="msg" class="msg"></div>
         </div>
         `;
@@ -136,36 +249,35 @@ class PedidoTransferencia extends HTMLElement {
 
     init(shadow) {
         const API_URL =
-        "https://script.google.com/macros/s/AKfycbws4iTQbSSL752yMX8S56AKWXrZS-7GmppyHxniwbr2d_9gmfnuoBpDy1Nir2aJRNWWtA/exec";
+            "https://script.google.com/macros/s/AKfycbynwSc4ElgU83SoIla5AelVW0Itcw_2xZF5L_yQAPjXcdTgNTbl-5sApGRWh6bpnLZUKQ/exec";
 
-        const limpaObj = m => {
+        // data SP
+        shadow.getElementById("linha-data").textContent =
+            "São Paulo - SP, " + new Date().toLocaleDateString("pt-BR");
+
+        const get = id => shadow.getElementById(id).value.trim();
+
+        const msgEl = shadow.getElementById("msg");
+        const setMsg = (texto, tipo = "info") => {
+            msgEl.textContent = texto;
+            msgEl.className = "msg " + tipo;
+        };
+
+        const limpaMensagem = (m) => {
             if (!m) return "";
             if (typeof m === "string") return m;
             if (typeof m === "object" && Object.keys(m).length === 0) return "";
             return JSON.stringify(m);
         };
 
-        shadow.getElementById("linha-data").textContent =
-            "São Paulo - SP, " + new Date().toLocaleDateString("pt-BR");
-
-        const get = id => shadow.getElementById(id).value.trim();
-
-        const msg = shadow.getElementById("msg");
-        const setMsg = (texto, tipo = "info") => {
-            msg.textContent = texto;
-            msg.className = tipo;
-        };
-
-        // --------------------------------------------------------
-        // ENVIAR TOKEN
-        // --------------------------------------------------------
+        // ------------ ENVIAR TOKEN ------------
         shadow.getElementById("btn-token").addEventListener("click", async () => {
             const email = get("email");
             const aluno = get("aluno");
             const responsavel = get("responsavel");
 
             if (!email || !aluno || !responsavel) {
-                setMsg("Preencha Nome, Aluno e E-mail antes de solicitar.", "erro");
+                setMsg("Preencha Nome do responsável, Aluno e E-mail antes de solicitar o token.", "erro");
                 return;
             }
 
@@ -177,36 +289,38 @@ class PedidoTransferencia extends HTMLElement {
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify({
                         action: "solicitarToken",
-                        email, aluno, responsavel
+                        email,
+                        aluno,
+                        responsavel
                     })
                 });
 
                 const json = await resp.json();
 
                 if (json.sucesso) {
-                    setMsg("Token enviado ao e-mail informado.", "sucesso");
+                    setMsg("Token enviado ao e-mail informado. Verifique a caixa de entrada e o spam.", "sucesso");
                 } else {
-                    setMsg(limpaObj(json.mensagem) || "Erro ao enviar token.", "erro");
+                    setMsg(limpaMensagem(json.mensagem) || "Erro ao enviar token.", "erro");
                 }
-
-            } catch {
+            } catch (e) {
+                console.error(e);
                 setMsg("Erro ao enviar token.", "erro");
             }
         });
 
-        // --------------------------------------------------------
-        // ENVIAR FORMULÁRIO
-        // --------------------------------------------------------
+        // ------------ ENVIAR PEDIDO + DECLARAÇÃO ------------
         shadow.getElementById("btn-enviar").addEventListener("click", async () => {
-            const campos = ["responsavel", "cpf", "aluno", "serie", "tipo", "motivo", "telefone", "email", "token"];
-            for (let c of campos) {
+            const camposObrig = [
+                "responsavel", "cpf", "aluno", "serie", "tipo",
+                "momento", "motivo", "telefone", "email", "token"
+            ];
+
+            for (let c of camposObrig) {
                 if (!get(c)) {
-                    setMsg("Preencha todos os campos.", "erro");
+                    setMsg("Preencha todos os campos obrigatórios.", "erro");
                     return;
                 }
             }
-
-            setMsg("Gerando PDF...", "info");
 
             const dados = {
                 responsavel: get("responsavel"),
@@ -214,6 +328,8 @@ class PedidoTransferencia extends HTMLElement {
                 aluno: get("aluno"),
                 serie: get("serie"),
                 tipo: get("tipo"),
+                momento: get("momento"),
+                serieDestino: get("serieDestino") || get("serie"),
                 motivo: get("motivo"),
                 telefone: get("telefone"),
                 email: get("email"),
@@ -223,56 +339,115 @@ class PedidoTransferencia extends HTMLElement {
                 dataISO: new Date().toISOString().slice(0, 10)
             };
 
-            // GERA PDF
-            const container = document.createElement("div");
-            container.innerHTML = `
+            setMsg("Gerando documentos em PDF...", "info");
+
+            // ---- PDF 1: Pedido de Transferência / Cancelamento ----
+            const pedidoWrapper = document.createElement("div");
+            pedidoWrapper.innerHTML = `
             <div style="font-family:Arial;padding:24px;">
-                <h2>Pedido de Transferência / Cancelamento</h2>
+                <h2 style="text-align:center;margin-bottom:10px;">
+                    Pedido de Transferência / Cancelamento de Matrícula
+                </h2>
                 <p><b>Responsável:</b> ${dados.responsavel}</p>
                 <p><b>CPF:</b> ${dados.cpf}</p>
-                <p><b>Aluno:</b> ${dados.aluno}</p>
-                <p><b>Série:</b> ${dados.serie}</p>
-                <p><b>Tipo:</b> ${dados.tipo}</p>
+                <p><b>Aluno(a):</b> ${dados.aluno}</p>
+                <p><b>Série / Turma (atual):</b> ${dados.serie}</p>
+                <p><b>Tipo de solicitação:</b> ${dados.tipo}</p>
+                <p><b>Momento da solicitação:</b> ${dados.momento}</p>
+                <p><b>Série / Turma para prosseguir os estudos:</b> ${dados.serieDestino}</p>
                 <p><b>Motivo:</b><br>${dados.motivo}</p>
                 <p><b>Telefone:</b> ${dados.telefone}</p>
                 <p><b>E-mail:</b> ${dados.email}</p>
-                <p><b>Token:</b> ${dados.token}</p>
-                <p>${dados.cidade}, ${dados.dataLonga}</p>
+                <p style="margin-top:18px;">
+                    <b>Assinatura digital:</b> confirmada via token enviado ao e-mail do responsável.
+                </p>
+                <p><b>Código de validação:</b> ${dados.token}</p>
+                <p style="margin-top:20px;">${dados.cidade}, ${dados.dataLonga}</p>
             </div>`;
 
-            const uri = await html2pdf()
+            const pedidoPdfUri = await html2pdf()
                 .set({
                     margin: 10,
                     filename: `pedido_${dados.aluno}_${dados.dataISO}.pdf`,
                     html2canvas: { scale: 2 },
                     jsPDF: { unit: "mm", format: "a4" }
                 })
-                .from(container)
+                .from(pedidoWrapper)
                 .outputPdf("datauristring");
 
-            dados.pdfBase64 = uri.split(",")[1];
+            const pdfBase64 = pedidoPdfUri.split(",")[1];
 
-            // ENVIA AO APPS SCRIPT
+            // ---- PDF 2: Declaração de Transferência (modelo) ----
+            const declaracaoWrapper = document.createElement("div");
+            declaracaoWrapper.innerHTML = `
+            <div style="font-family:Arial;padding:40px 40px 24px;line-height:1.6;">
+                <h2 style="text-align:center;margin-top:0;margin-bottom:24px;">Declaração de Transferência</h2>
+                <p>
+                  Atesto para os devidos fins, que o aluno(a)
+                  <b>${dados.aluno}</b>,
+                  está cursando o(a)
+                  <b>${dados.serie}</b>,
+                  e deve prosseguir os estudos no(a)
+                  <b>${dados.serieDestino}</b>.
+                </p>
+
+                <p>
+                  A documentação de Histórico escolar tem o prazo de 90 (noventa) dias, ao contar da data da transferência.
+                  (caso haja documentação pendente, conta a partir da entrega da documentação)
+                </p>
+
+                <p style="margin-top:32px;">
+                  Sem mais,
+                </p>
+
+                <p style="margin-top:40px;">
+                  ${dados.cidade}, ${dados.dataLonga}
+                </p>
+
+                <p style="margin-top:60px;font-size:13px;color:#555;text-align:center;">
+                  R. Diogo de Souza, 257 – Cidade Líder – São Paulo - SP – CEP 08285-330<br>
+                  www.raizesedu.com.br – Tel/Fax: 2741-9849
+                </p>
+            </div>`;
+
+            const declaracaoPdfUri = await html2pdf()
+                .set({
+                    margin: 10,
+                    filename: `declaracao_transferencia_${dados.aluno}_${dados.dataISO}.pdf`,
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: "mm", format: "a4" }
+                })
+                .from(declaracaoWrapper)
+                .outputPdf("datauristring");
+
+            const declaracaoBase64 = declaracaoPdfUri.split(",")[1];
+
+            // ---- Enviar tudo para o Apps Script ----
+            setMsg("Enviando documentos para o Colégio. Aguarde...", "info");
+
             try {
                 const resp = await fetch(API_URL, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify({
                         action: "salvarPedido",
-                        ...dados
+                        ...dados,
+                        pdfBase64,
+                        declaracaoBase64
                     })
                 });
 
                 const json = await resp.json();
 
                 if (json.sucesso) {
-                    setMsg("Pedido enviado com sucesso!", "sucesso");
+                    setMsg("Pedido e declaração enviados com sucesso. Obrigado!", "sucesso");
                 } else {
-                    setMsg(limpaObj(json.mensagem) || "Erro ao salvar.", "erro");
+                    setMsg(limpaMensagem(json.mensagem) || "Erro ao salvar os documentos.", "erro");
                 }
 
-            } catch {
-                setMsg("Erro ao concluir envio.", "erro");
+            } catch (e) {
+                console.error(e);
+                setMsg("Erro ao concluir o envio dos documentos.", "erro");
             }
         });
     }
