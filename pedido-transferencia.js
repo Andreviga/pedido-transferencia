@@ -292,7 +292,7 @@ class PedidoTransferencia extends HTMLElement {
 
     init(shadow) {
         const API_URL =
-            "https://script.google.com/macros/s/AKfycbynwSc4ElgU83SoIla5AelVW0Itcw_2xZF5L_yQAPjXcdTgNTbl-5sApGRWh6bpnLZUKQ/exec";
+            "https://script.google.com/macros/s/AKfycbws4iTQbSSL752yMX8S56AKWXrZS-7GmppyHxniwbr2d_9gmfnuoBpDy1Nir2aJRNWWtA/exec";
 
         shadow.getElementById("linha-data").textContent =
             "São Paulo - SP, " + new Date().toLocaleDateString("pt-BR");
