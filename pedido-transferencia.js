@@ -328,7 +328,7 @@ class PedidoTransferencia extends HTMLElement {
             try {
                 const resp = await fetch(API_URL, {
                     method: "POST",
-                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         action: "solicitarToken",
                         email,
