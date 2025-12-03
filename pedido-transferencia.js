@@ -292,7 +292,7 @@ class PedidoTransferencia extends HTMLElement {
 
     init(shadow) {
         // URL do seu Web App (terminando em /exec)
-        const API_URL = "https://script.google.com/a/macros/colegioraizes-objetivo.com.br/s/AKfycbyUWu2jhf2cX87IZeoNmgymr-mILSSvGR01teleB4vnz9M8Bo-834cJSBnendh0jwgc/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbxv3H192UWaohjv8ETytso9XKplnOnZxfnVOA6kRcnRqsU_8iLoH7IMmLgpZ2wW5tDM/exec";
 
         shadow.getElementById("linha-data").textContent =
             "São Paulo - SP, " + new Date().toLocaleDateString("pt-BR");
