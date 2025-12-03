@@ -297,7 +297,7 @@ class PedidoTransferencia extends HTMLElement {
         shadow.getElementById("linha-data").textContent =
             "São Paulo - SP, " + new Date().toLocaleDateString("pt-BR");
 
-        const get = id => shadow.getElementById(id).value.trim();
+        const get = id => shadow.getElementById(id).value.trim();    
 
         const msgEl = shadow.getElementById("msg");
         const setMsg = (texto, tipo = "info") => {
