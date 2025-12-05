@@ -230,18 +230,45 @@ class PedidoTransferencia extends HTMLElement {
             </div>
 
             <div class="rescisao-box">
-                <b>Informação sobre rescisão contratual:</b><br>
-                A solicitação de transferência ou cancelamento no decorrer do ano letivo caracteriza
-                <b>rescisão contratual</b>, conforme Cláusula 17 do contrato educacional.  
-                De forma resumida:
-                <ul style="margin:6px 0 0 18px;padding:0;">
-                    <li>A rescisão deve ser formalizada por escrito, por meio deste requerimento.</li>
-                    <li>O responsável permanece obrigado ao pagamento da próxima mensalidade vincenda.</li>
-                    <li>Sem o pedido formal, o contrato permanece ativo, com cobrança normal das parcelas.</li>
-                    <li>Rescisões motivadas por divergências pedagógicas ou de serviço passam por processo interno,
-                        com registros, reuniões e protocolos, podendo haver multa de 10% sobre o valor restante do ano letivo.</li>
-                </ul>
-            </div>
+    <b>Informação sobre rescisão contratual:</b><br>
+    De acordo com o contrato educacional, <b>toda desistência após a matrícula</b> caracteriza
+    <b>rescisão contratual</b>, conforme Cláusulas 4ª e 17.
+
+    <p style="margin:6px 0 4px;"><b>1) Após o início do ano letivo – Transferência</b></p>
+    <ul style="margin:0 0 4px 18px;padding:0;">
+        <li>Depois do início do ano letivo, a saída do aluno é tratada como
+            <b>transferência de escola</b> (com guia e/ou declaração), e não mais como
+            “cancelamento simples”.</li>
+        <li>A rescisão deve ser formalizada por escrito, <b>por meio deste requerimento</b>
+            (Cláusula 17).</li>
+        <li>O responsável permanece obrigado ao pagamento da
+            <b>próxima mensalidade vincenda</b>, podendo o aluno frequentar até o último
+            dia desse mês (Cláusula 17, § 1º).</li>
+        <li>Enquanto não houver o pedido formal, o contrato permanece íntegro, com
+            cobrança normal das parcelas, mesmo que o aluno deixe de frequentar
+            as aulas (Cláusula 17, § 2º).</li>
+    </ul>
+
+    <p style="margin:8px 0 4px;"><b>2) Antes do início do ano letivo – Cancelamento de matrícula</b></p>
+    <ul style="margin:0 0 4px 18px;padding:0;">
+        <li>O cancelamento da matrícula antes do início das aulas também deve ser
+            feito por escrito, <b>por meio deste requerimento</b> de cancelamento.</li>
+        <li>Nesse caso, o Colégio poderá reter até
+            <b>20% (vinte por cento)</b> do valor da primeira parcela ou taxa de
+            matrícula, a título de despesas administrativas e de secretaria
+            (Cláusula 4ª, § 5º).</li>
+    </ul>
+
+    <p style="margin:8px 0 4px;"><b>3) Rescisão por divergências pedagógicas ou de serviço</b></p>
+    <ul style="margin:0 0 0 18px;padding:0;">
+        <li>Quando a rescisão (por transferência ou cancelamento) tiver como motivo
+            divergências pedagógicas ou de prestação de serviços, ela passa por
+            <b>processo administrativo interno</b>, com registros, reuniões e
+            protocolos.</li>
+        <li>Se esse fluxo não for seguido, poderá ser cobrada <b>multa de 10%</b>
+            sobre o valor restante do ano letivo, conforme Cláusula 17, § 3º.</li>
+    </ul>
+</div>
 
             <label>Série / Turma para prosseguir os estudos</label>
             <input id="serieDestino" placeholder="Ex: 6º ano A">
