@@ -1,3 +1,63 @@
+const SERIES_OPTIONS = [
+    "Mini Maternal",
+    "Maternal",
+    "Jardim I",
+    "Jardim II",
+    "1º ano do Ensino Fundamental",
+    "2º ano do Ensino Fundamental",
+    "3º ano do Ensino Fundamental",
+    "4º ano do Ensino Fundamental",
+    "5º ano do Ensino Fundamental",
+    "6º ano do Ensino Fundamental",
+    "7º ano do Ensino Fundamental",
+    "8º ano do Ensino Fundamental",
+    "9º ano do Ensino Fundamental",
+    "1ª série do Ensino Médio",
+    "2ª série do Ensino Médio",
+    "3ª série do Ensino Médio"
+];
+
+const RESCISAO_HTML = `
+    <b>Informação sobre rescisão contratual:</b><br>
+    De acordo com o contrato educacional, <b>toda desistência após a matrícula</b> caracteriza
+    <b>rescisão contratual</b>, conforme Cláusulas 4ª e 17.
+
+    <p style="margin:6px 0 4px;"><b>1) Após o início do ano letivo – Transferência</b></p>
+    <ul style="margin:0 0 4px 18px;padding:0;">
+        <li>Depois do início do ano letivo, a saída do aluno é tratada como
+            <b>transferência de escola</b> (com guia e/ou declaração), e não mais como
+            “cancelamento simples”.</li>
+        <li>A rescisão deve ser formalizada por escrito, <b>por meio deste requerimento</b>
+            (Cláusula 17).</li>
+        <li>O responsável permanece obrigado ao pagamento da
+            <b>próxima mensalidade vincenda</b>, podendo o aluno frequentar até o último
+            dia desse mês (Cláusula 17, § 1º).</li>
+        <li>Enquanto não houver o pedido formal, o contrato permanece íntegro, com
+            cobrança normal das parcelas, mesmo que o aluno deixe de frequentar
+            as aulas (Cláusula 17, § 2º).</li>
+    </ul>
+
+    <p style="margin:8px 0 4px;"><b>2) Antes do início do ano letivo – Cancelamento de matrícula</b></p>
+    <ul style="margin:0 0 4px 18px;padding:0;">
+        <li>O cancelamento da matrícula antes do início das aulas também deve ser
+            feito por escrito, <b>por meio deste requerimento</b> de cancelamento.</li>
+        <li>Nesse caso, o Colégio poderá reter até
+            <b>20% (vinte por cento)</b> do valor da primeira parcela ou taxa de
+            matrícula, a título de despesas administrativas e de secretaria
+            (Cláusula 4ª, § 5º).</li>
+    </ul>
+
+    <p style="margin:8px 0 4px;"><b>3) Rescisão por divergências pedagógicas ou de serviço</b></p>
+    <ul style="margin:0 0 0 18px;padding:0;">
+        <li>Quando a rescisão (por transferência ou cancelamento) tiver como motivo
+            divergências pedagógicas ou de prestação de serviços, ela passa por
+            <b>processo administrativo interno</b>, com registros, reuniões e
+            protocolos.</li>
+        <li>Se esse fluxo não for seguido, poderá ser cobrada <b>multa de 10%</b>
+            sobre o valor restante do ano letivo, conforme Cláusula 17, § 3º.</li>
+    </ul>
+`;
+
 class PedidoTransferencia extends HTMLElement {
     constructor() {
         super();
@@ -201,8 +261,10 @@ class PedidoTransferencia extends HTMLElement {
                     <input id="aluno">
                 </div>
                 <div class="col">
-                    <label>Série / Turma (atual)</label>
-                    <input id="serie" placeholder="Ex: 5º ano A">
+                    <label>Série / Etapa atual</label>
+                    <select id="serie">
+                        <option value="">Selecione...</option>
+                    </select>
                 </div>
             </div>
 
@@ -229,49 +291,15 @@ class PedidoTransferencia extends HTMLElement {
                 </div>
             </div>
 
-            <div class="rescisao-box">
-    <b>Informação sobre rescisão contratual:</b><br>
-    De acordo com o contrato educacional, <b>toda desistência após a matrícula</b> caracteriza
-    <b>rescisão contratual</b>, conforme Cláusulas 4ª e 17.
+            <div class="rescisao-box">${RESCISAO_HTML}</div>
 
-    <p style="margin:6px 0 4px;"><b>1) Após o início do ano letivo – Transferência</b></p>
-    <ul style="margin:0 0 4px 18px;padding:0;">
-        <li>Depois do início do ano letivo, a saída do aluno é tratada como
-            <b>transferência de escola</b> (com guia e/ou declaração), e não mais como
-            “cancelamento simples”.</li>
-        <li>A rescisão deve ser formalizada por escrito, <b>por meio deste requerimento</b>
-            (Cláusula 17).</li>
-        <li>O responsável permanece obrigado ao pagamento da
-            <b>próxima mensalidade vincenda</b>, podendo o aluno frequentar até o último
-            dia desse mês (Cláusula 17, § 1º).</li>
-        <li>Enquanto não houver o pedido formal, o contrato permanece íntegro, com
-            cobrança normal das parcelas, mesmo que o aluno deixe de frequentar
-            as aulas (Cláusula 17, § 2º).</li>
-    </ul>
-
-    <p style="margin:8px 0 4px;"><b>2) Antes do início do ano letivo – Cancelamento de matrícula</b></p>
-    <ul style="margin:0 0 4px 18px;padding:0;">
-        <li>O cancelamento da matrícula antes do início das aulas também deve ser
-            feito por escrito, <b>por meio deste requerimento</b> de cancelamento.</li>
-        <li>Nesse caso, o Colégio poderá reter até
-            <b>20% (vinte por cento)</b> do valor da primeira parcela ou taxa de
-            matrícula, a título de despesas administrativas e de secretaria
-            (Cláusula 4ª, § 5º).</li>
-    </ul>
-
-    <p style="margin:8px 0 4px;"><b>3) Rescisão por divergências pedagógicas ou de serviço</b></p>
-    <ul style="margin:0 0 0 18px;padding:0;">
-        <li>Quando a rescisão (por transferência ou cancelamento) tiver como motivo
-            divergências pedagógicas ou de prestação de serviços, ela passa por
-            <b>processo administrativo interno</b>, com registros, reuniões e
-            protocolos.</li>
-        <li>Se esse fluxo não for seguido, poderá ser cobrada <b>multa de 10%</b>
-            sobre o valor restante do ano letivo, conforme Cláusula 17, § 3º.</li>
-    </ul>
-</div>
-
-            <label>Série / Turma para prosseguir os estudos</label>
-            <input id="serieDestino" placeholder="Ex: 6º ano A">
+            <label>Série / Etapa para prosseguir os estudos</label>
+            <select id="serieDestino">
+                <option value="">Selecione...</option>
+            </select>
+            <div class="small-note">
+                Se a saída ocorrer no meio do ano, a continuidade permanece na mesma série. Se ocorrer no fim do ano, o sistema sugere automaticamente a série seguinte.
+            </div>
 
             <label>Motivo da solicitação</label>
             <textarea id="motivo" rows="4" placeholder="Descreva o motivo da transferência ou cancelamento..."></textarea>
@@ -324,7 +352,34 @@ class PedidoTransferencia extends HTMLElement {
         shadow.getElementById("linha-data").textContent =
             "São Paulo - SP, " + new Date().toLocaleDateString("pt-BR");
 
-        const get = id => shadow.getElementById(id).value.trim();    
+        const get = id => shadow.getElementById(id).value.trim();
+        const serieEl = shadow.getElementById("serie");
+        const serieDestinoEl = shadow.getElementById("serieDestino");
+        const momentoEl = shadow.getElementById("momento");
+
+        const preencherSeries = () => {
+            const options = SERIES_OPTIONS.map(serie => `<option value="${serie}">${serie}</option>`).join("");
+            serieEl.insertAdjacentHTML("beforeend", options);
+            serieDestinoEl.insertAdjacentHTML("beforeend", options);
+        };
+
+        const calcularSerieDestino = (serieAtual, momento) => {
+            if (!serieAtual) return "";
+            if (momento !== "Fim do ano") return serieAtual;
+
+            const indiceAtual = SERIES_OPTIONS.indexOf(serieAtual);
+            if (indiceAtual === -1) return serieAtual;
+            return SERIES_OPTIONS[Math.min(indiceAtual + 1, SERIES_OPTIONS.length - 1)];
+        };
+
+        const atualizarSerieDestino = () => {
+            const serieDestino = calcularSerieDestino(get("serie"), get("momento"));
+            serieDestinoEl.value = serieDestino;
+        };
+
+        preencherSeries();
+        serieEl.addEventListener("change", atualizarSerieDestino);
+        momentoEl.addEventListener("change", atualizarSerieDestino);
 
         const msgEl = shadow.getElementById("msg");
         const setMsg = (texto, tipo = "info") => {
@@ -398,12 +453,12 @@ class PedidoTransferencia extends HTMLElement {
                 serie: get("serie"),
                 tipo: get("tipo"),
                 momento: get("momento"),
-                serieDestino: get("serieDestino") || get("serie"),
                 motivo: get("motivo"),
                 telefone: get("telefone"),
                 email: get("email"),
                 token: get("token"),
                 cidade: "São Paulo - SP",
+                serieDestino: get("serieDestino") || calcularSerieDestino(get("serie"), get("momento")) || get("serie"),
                 dataLonga: new Date().toLocaleDateString("pt-BR"),
                 dataISO: new Date().toISOString().slice(0, 10)
             };
@@ -432,7 +487,7 @@ class PedidoTransferencia extends HTMLElement {
                   </div>
                 </div>
 
-                <h2 style="text-align:center;margin-top:0;margin-bottom:16px;">Pedido de Transferência / Cancelamento de Matrícula</h2>
+                <h2 style="text-align:center;margin-top:0;margin-bottom:16px;">Recibo do Pedido de Transferência / Cancelamento de Matrícula</h2>
 
                 <p style="font-size:12px;color:#555;margin-bottom:18px;">
                   ${dados.cidade}, ${dados.dataLonga}
@@ -464,6 +519,11 @@ class PedidoTransferencia extends HTMLElement {
                   ${dados.motivo}
                 </p>
 
+                <div style="margin-top:20px;background:#f8f8f8;border:1px solid #ddd;border-radius:8px;padding:14px 16px;font-size:12px;line-height:1.5;">
+                  <div style="font-size:13px;font-weight:bold;color:#004d40;margin-bottom:8px;">Cláusulas contratuais informadas no recibo</div>
+                  ${RESCISAO_HTML}
+                </div>
+
                 <h3 style="font-size:14px;color:#004d40;margin-bottom:6px;">Assinatura digital</h3>
                 <p style="font-size:13px;">
                   O responsável confirmou este pedido por meio de token enviado ao e-mail informado.<br>
@@ -480,7 +540,7 @@ class PedidoTransferencia extends HTMLElement {
             const pedidoPdfUri = await html2pdf()
                 .set({
                     margin: 10,
-                    filename: `pedido_${dados.aluno}_${dados.dataISO}.pdf`,
+                    filename: `recibo_pedido_${dados.aluno}_${dados.dataISO}.pdf`,
                     html2canvas: { scale: 2 },
                     jsPDF: { unit: "mm", format: "a4" }
                 })
